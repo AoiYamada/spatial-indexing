@@ -72,7 +72,7 @@ spatialIndexingSingleton.register({
 })
 ```
 
-Types you maybe useful
+Types maybe useful to you
 
 ```ts
 type Point = {
