@@ -5,6 +5,8 @@ Currently only support Spatial Hash Grid
 
 # Demo
 
+[Here](https://aoiyamada.github.io/spatial-indexing/p5demo)
+
 # Install
 
 Currently don't publish to npm yet, so clone this repo and run
@@ -101,6 +103,8 @@ abstract class AbstractIndexingStrategy<T = any> implements SpatialIndexingStrat
 ```
 
 # More docs
+
+[Here](https://aoiyamada.github.io/spatial-indexing/)
 
 # Thanks
 
