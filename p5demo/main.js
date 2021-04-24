@@ -7,7 +7,7 @@ const LEFT_TOP_Y = 0
 
 const {
   SpatialIndexing,
-  constants: { STRATEGIES }
+  constants: { STRATEGIES },
 } = spatialIndexing
 
 const spatialIndexingSingleton = new SpatialIndexing()
@@ -15,7 +15,11 @@ const spatialIndexingSingleton = new SpatialIndexing()
 spatialIndexingSingleton.create(STRATEGIES.NAIVE)
 spatialIndexingSingleton.create(STRATEGIES.SPATIAL_HASH_GRID, {
   bound: { position: { x: LEFT_TOP_X, y: LEFT_TOP_Y }, width: canvasWidth, height: canvasHeight },
-  dimensions: { x: DIMENSION_X, y: DIMENSION_Y }
+  dimensions: { x: DIMENSION_X, y: DIMENSION_Y },
+})
+spatialIndexingSingleton.create(STRATEGIES.QUADTREE, {
+  bound: { position: { x: LEFT_TOP_X, y: LEFT_TOP_Y }, width: canvasWidth, height: canvasHeight },
+  capacity: 5,
 })
 
 const drawGridMethods = {
@@ -29,14 +33,43 @@ const drawGridMethods = {
         rect(x * region.width, y * region.height, region.width, region.height)
       }
     }
-  }
+  },
+  // Don't use arrow fn to get caller's 'this'
+  [STRATEGIES.QUADTREE]: function () {
+    stroke(255)
+    strokeWeight(0.5)
+    noFill()
+
+    rect(this.bound.position.x, this.bound.position.y, this.bound.width, this.bound.height)
+
+    if (this.subtrees.length < 4) {
+      return
+    }
+
+    const decoratedSubtrees = this.subtrees.map(
+      (subtree) =>
+        new Proxy(subtree, {
+          get: function (target, name) {
+            if (name === 'drawGrids') {
+              return drawGridMethods[target.type] || drawGridMethods['default']
+            }
+
+            return Reflect.get(target, name)
+          },
+        })
+    )
+
+    for (const subtree of decoratedSubtrees) {
+      subtree.drawGrids()
+    }
+  },
 }
 
 let decoratedIndexingLib
 
 const region = {
   width: canvasWidth / DIMENSION_X,
-  height: canvasHeight / DIMENSION_Y
+  height: canvasHeight / DIMENSION_Y,
 }
 
 let slider
@@ -54,11 +87,11 @@ const rectangles = Array.from({ length: 3000 }, (_, idx) => {
   return {
     position: {
       x: rectangle.x,
-      y: rectangle.y
+      y: rectangle.y,
     },
     width: rectangle.width,
     height: rectangle.height,
-    data: rectangle
+    data: rectangle,
   }
 })
 
@@ -67,8 +100,10 @@ function setup() {
 
   sel = createSelect()
   sel.position(10, canvasHeight + 20)
-  sel.option(STRATEGIES.NAIVE)
-  sel.option(STRATEGIES.SPATIAL_HASH_GRID)
+
+  for (const strategy of Object.values(STRATEGIES)) {
+    sel.option(strategy)
+  }
   sel.selected(STRATEGIES.NAIVE)
   sel.changed(changeStrategy)
 
@@ -87,13 +122,13 @@ function changeStrategy() {
   const strategy = sel.value()
 
   decoratedIndexingLib = new Proxy(spatialIndexingSingleton.get(strategy), {
-    get: function(target, name) {
+    get: function (target, name) {
       if (name === 'drawGrids') {
         return drawGridMethods[target.type] || drawGridMethods['default']
       }
 
       return Reflect.get(target, name)
-    }
+    },
   })
 }
 
@@ -130,10 +165,10 @@ function draw() {
   const findRegion = {
     position: {
       x: mouseX - findWidth / 2,
-      y: mouseY - findHeight / 2
+      y: mouseY - findHeight / 2,
     },
     width: findWidth,
-    height: findHeight
+    height: findHeight,
   }
 
   drawFindRegion(findRegion)
@@ -149,7 +184,7 @@ function draw() {
         rectangle.data.intersect({
           ...findRegion.position,
           width: findRegion.width,
-          height: findRegion.height
+          height: findRegion.height,
         })
       ) {
         fill(0, 255, 0, 100)

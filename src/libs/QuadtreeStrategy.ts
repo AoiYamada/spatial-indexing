@@ -4,7 +4,7 @@ import { QuadtreeStrategyConfig } from '../types'
 import { AbstractIndexingStrategy } from './AbstractIndexingStrategy'
 
 export class QuadtreeStrategy<T = any> extends AbstractIndexingStrategy {
-  public readonly type = STRATEGIES.NAIVE
+  public readonly type = STRATEGIES.QUADTREE
   public readonly capacity: number
   public readonly bound: Rect
   public readonly subtrees: QuadtreeStrategy<T>[] = []
