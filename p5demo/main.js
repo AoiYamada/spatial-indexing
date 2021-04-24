@@ -19,7 +19,7 @@ spatialIndexingSingleton.create(STRATEGIES.SPATIAL_HASH_GRID, {
 })
 spatialIndexingSingleton.create(STRATEGIES.QUADTREE, {
   bound: { position: { x: LEFT_TOP_X, y: LEFT_TOP_Y }, width: canvasWidth, height: canvasHeight },
-  capacity: 5,
+  capacity: 10,
 })
 
 const drawGridMethods = {
@@ -131,6 +131,7 @@ function changeStrategy() {
 }
 
 function changeDistribution() {
+  decoratedIndexingLib.clear()
   rectangles = rectangles.map(rectangleMapFns[distributionSelection.value()])
 
   for (const rectangle of rectangles) {

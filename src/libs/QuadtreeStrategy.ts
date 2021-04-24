@@ -121,6 +121,7 @@ export class QuadtreeStrategy<T = any> extends AbstractIndexingStrategy {
   }
 
   clear(): void {
+    this.items.clear()
     this.subtrees.splice(0, this.subtrees.length)
   }
 
