@@ -3,6 +3,8 @@
 A spatial indexing lib provide uniform methods for studying different algorithms' performance.
 Currently only support Spatial Hash Grid
 
+# Demo
+
 # Install
 
 Currently don't publish to npm yet, so clone this repo and run
@@ -97,6 +99,8 @@ abstract class AbstractIndexingStrategy<T = any> implements SpatialIndexingStrat
   abstract clear(): void
 }
 ```
+
+# More docs
 
 # Thanks
 
