@@ -80,7 +80,7 @@ let rectangles = Array.from({ length: 3000 })
 function setup() {
   createCanvas(canvasWidth, canvasHeight)
 
-  const leftPosition = 130
+  const leftPosition = 150
 
   // strategy selection
   strategySelection = createSelect()
