@@ -27,7 +27,7 @@ jobs:
       - name: Create .env file
         run: |
           touch .env
-          echo SECRET=${{ secrets.SECRET }} >> .env
+          echo GH_TOKEN=${{ secrets.ACTIONS_DEPLOY_ACCESS_TOKEN }} >> .env
       - name: Deploy
         run: |
           git config --global user.name $user_name
