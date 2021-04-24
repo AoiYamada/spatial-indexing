@@ -1,3 +1,4 @@
+require('dotenv').config()
 const { cd, exec, echo, touch } = require('shelljs')
 const { readFileSync } = require('fs')
 const url = require('url')
@@ -15,7 +16,7 @@ if (typeof pkg.repository === 'object') {
 
 let parsedUrl = url.parse(repoUrl)
 let repository = (parsedUrl.host || '') + (parsedUrl.path || '')
-let ghToken = process.env.ACTIONS_DEPLOY_ACCESS_TOKEN
+let ghToken = process.env.GH_TOKEN
 
 echo('Deploying docs!!!')
 cd('docs')
