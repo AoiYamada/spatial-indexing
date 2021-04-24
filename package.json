@@ -27,7 +27,7 @@
   "scripts": {
     "lint": "tslint  --project tsconfig.json -t codeFrame 'src/**/*.ts' 'test/**/*.ts'",
     "prebuild": "rimraf dist",
-    "build": "tsc --module commonjs && rollup -c rollup.config.ts && typedoc --out docs --theme minimal src",
+    "build": "tsc --module commonjs && rollup -c rollup.config.ts && typedoc --out docs --theme minimal src && cp -r ./p5demo ./docs/ && cp ./dist/spatial-indexing.umd.js ./docs/p5demo/spatial-indexing.umd.js",
     "start": "rollup -c rollup.config.ts -w",
     "test": "jest --coverage",
     "test:watch": "jest --coverage --watch",
@@ -122,5 +122,6 @@
     "tslint-config-standard": "8.0.1",
     "typedoc": "0.20.36",
     "typescript": "4.2.4"
-  }
+  },
+  "homepage": "https://aoiyamada.github.io/spatial-indexing"
 }
