@@ -8,7 +8,7 @@ import { AbstractIndexingStrategy } from './AbstractIndexingStrategy'
 const range = (input: number) => Math.max(0, Math.min(1, input))
 
 // Ref: https://github.com/simondevyoutube/Tutorial_SpatialHashGrid/blob/main/src/spatial-grid.js
-export class SpatialHashGridStrategy<T>
+export class SpatialHashGridStrategy<T = any>
   extends AbstractIndexingStrategy
   implements SpatialIndexingStrategy {
   public readonly type = STRATEGIES.SPATIAL_HASH_GRID

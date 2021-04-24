@@ -2,7 +2,7 @@ import { STRATEGIES } from '../constants'
 import { Rect } from '../Rect'
 import { AbstractIndexingStrategy } from './AbstractIndexingStrategy'
 
-export class NaiveStrategy<T> extends AbstractIndexingStrategy {
+export class NaiveStrategy<T = any> extends AbstractIndexingStrategy {
   public readonly type = STRATEGIES.NAIVE
   private items = new Map<Rect<T>, Rect<T>>()
 

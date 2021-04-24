@@ -4,11 +4,13 @@ import {
   SpatialIndexingStrategyConstructor,
 } from './interfaces/SpatialIndexingStrategy'
 import { NaiveStrategy } from './libs/NaiveStrategy'
+import { QuadtreeStrategy } from './libs/QuadtreeStrategy'
 import { SpatialHashGridStrategy } from './libs/SpatialHashGridStrategy'
 
 export class SpatialIndexing {
   readonly strategies = new Map<string, SpatialIndexingStrategyConstructor>([
     [STRATEGIES.NAIVE, NaiveStrategy],
+    [STRATEGIES.QUADTREE, QuadtreeStrategy],
     [STRATEGIES.SPATIAL_HASH_GRID, SpatialHashGridStrategy],
   ])
   readonly instances = new Map<any, SpatialIndexingStrategy>()
