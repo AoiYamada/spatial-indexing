@@ -24,6 +24,10 @@ jobs:
           yarn
       - run: |
           sudo yarn build
+      - name: Create .env file
+        run: |
+          touch .env
+          echo SECRET=${{ secrets.SECRET }} >> .env
       - name: Deploy
         run: |
           git config --global user.name $user_name
