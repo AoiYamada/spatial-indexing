@@ -72,54 +72,52 @@ const region = {
   height: canvasHeight / DIMENSION_Y,
 }
 
-let slider
-let sel
-
-const rectangles = Array.from({ length: 3000 }, (_, idx) => {
-  const rectangle = new Rectangle(
-    Math.random() * canvasWidth,
-    Math.random() * canvasHeight,
-    (region.width * (2 - Math.random())) / 3,
-    (region.height * (2 - Math.random())) / 3,
-    idx
-  )
-
-  return {
-    position: {
-      x: rectangle.x,
-      y: rectangle.y,
-    },
-    width: rectangle.width,
-    height: rectangle.height,
-    data: rectangle,
-  }
-})
+let itemNumberSlider
+let strategySelection
+let distributionSelection
+let rectangles = Array.from({ length: 3000 })
 
 function setup() {
   createCanvas(canvasWidth, canvasHeight)
 
-  sel = createSelect()
-  sel.position(10, canvasHeight + 20)
+  const leftPosition = 130
+
+  // strategy selection
+  strategySelection = createSelect()
+  strategySelection.position(leftPosition, canvasHeight + 20)
+  const strategySelectionLabel = createDiv('IndexingStrategy')
+  strategySelectionLabel.position(10, canvasHeight + 20)
 
   for (const strategy of Object.values(STRATEGIES)) {
-    sel.option(strategy)
+    strategySelection.option(strategy)
   }
-  sel.selected(STRATEGIES.NAIVE)
-  sel.changed(changeStrategy)
+  strategySelection.selected(STRATEGIES.NAIVE)
+  strategySelection.changed(changeStrategy)
 
   changeStrategy()
 
-  slider = createSlider(0, 3000, 10)
-  slider.position(10, canvasHeight + 50)
-  slider.style('width', '300px')
+  // distribution selection
+  distributionSelection = createSelect()
+  distributionSelection.position(leftPosition, canvasHeight + 50)
+  const distributionSelectionLabel = createDiv('Distribution')
+  distributionSelectionLabel.position(10, canvasHeight + 50)
+  distributionSelection.option('random')
+  distributionSelection.option('concentrate')
+  distributionSelection.selected('random')
+  distributionSelection.changed(changeDistribution)
 
-  for (const rectangle of rectangles) {
-    rectangle.data.setVelocity(createVector(Math.random() * 2 - 1, Math.random() * 2 - 1))
-  }
+  changeDistribution()
+
+  // item number setting
+  itemNumberSlider = createSlider(0, 3000, 100)
+  itemNumberSlider.position(leftPosition, canvasHeight + 80)
+  itemNumberSlider.style('width', '300px')
+  const itemNumberSliderLabel = createDiv('ItemNumber')
+  itemNumberSliderLabel.position(10, canvasHeight + 80)
 }
 
 function changeStrategy() {
-  const strategy = sel.value()
+  const strategy = strategySelection.value()
 
   decoratedIndexingLib = new Proxy(spatialIndexingSingleton.get(strategy), {
     get: function (target, name) {
@@ -132,12 +130,61 @@ function changeStrategy() {
   })
 }
 
+function changeDistribution() {
+  rectangles = rectangles.map(rectangleMapFns[distributionSelection.value()])
+
+  for (const rectangle of rectangles) {
+    rectangle.data.setVelocity(createVector(Math.random() * 2 - 1, Math.random() * 2 - 1))
+  }
+}
+
+const rectangleMapFns = {
+  random: (_, idx) => {
+    const rectangle = new Rectangle(
+      Math.random() * canvasWidth,
+      Math.random() * canvasHeight,
+      (region.width * (2 - Math.random())) / 3,
+      (region.height * (2 - Math.random())) / 3,
+      idx
+    )
+
+    return {
+      position: {
+        x: rectangle.x,
+        y: rectangle.y,
+      },
+      width: rectangle.width,
+      height: rectangle.height,
+      data: rectangle,
+    }
+  },
+  concentrate: (_, idx) => {
+    const rectangle = new Rectangle(
+      (Math.random() * canvasWidth) / 4 + canvasWidth / 4,
+      (Math.random() * canvasHeight) / 4 + canvasHeight / 4,
+      (region.width * (2 - Math.random())) / 3,
+      (region.height * (2 - Math.random())) / 3,
+      idx
+    )
+
+    return {
+      position: {
+        x: rectangle.x,
+        y: rectangle.y,
+      },
+      width: rectangle.width,
+      height: rectangle.height,
+      data: rectangle,
+    }
+  },
+}
+
 function draw() {
   background(0)
   decoratedIndexingLib.drawGrids()
   decoratedIndexingLib.clear()
 
-  const maxRect = slider.value()
+  const maxRect = itemNumberSlider.value()
   strokeWeight(0)
   const fillColor = color(255, 255, 255, 100)
   fill(fillColor)
@@ -207,6 +254,6 @@ function drawFramerate() {
   stroke(255)
   fill(255)
   strokeWeight(1)
-  text(`Items: ${slider.value()}`, 10, 20)
+  text(`Items: ${itemNumberSlider.value()}`, 10, 20)
   text(`FPS: ${Math.floor(frameRate())}`, 10, 50)
 }
