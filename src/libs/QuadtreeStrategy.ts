@@ -6,14 +6,16 @@ import { AbstractIndexingStrategy } from './AbstractIndexingStrategy'
 export class QuadtreeStrategy<T = any> extends AbstractIndexingStrategy {
   public readonly type = STRATEGIES.QUADTREE
   public readonly capacity: number
+  public readonly level: number
   public readonly bound: Rect
   public readonly subtrees: QuadtreeStrategy<T>[] = []
   public readonly items = new Map<Rect<T>, Rect<T>>()
 
-  constructor({ bound, capacity = 5 }: QuadtreeStrategyConfig) {
+  constructor({ bound, capacity = 5, level = 1 }: QuadtreeStrategyConfig) {
     super()
     this.bound = bound
     this.capacity = capacity
+    this.level = level
   }
 
   insert(item: Rect<T>): void {
@@ -45,6 +47,7 @@ export class QuadtreeStrategy<T = any> extends AbstractIndexingStrategy {
             subregion.height
           ),
           capacity: this.capacity,
+          level: this.level + 1,
         }),
         // NW
         new QuadtreeStrategy({
@@ -57,6 +60,7 @@ export class QuadtreeStrategy<T = any> extends AbstractIndexingStrategy {
             subregion.height
           ),
           capacity: this.capacity,
+          level: this.level + 1,
         }),
         // SW
         new QuadtreeStrategy({
@@ -69,6 +73,7 @@ export class QuadtreeStrategy<T = any> extends AbstractIndexingStrategy {
             subregion.height
           ),
           capacity: this.capacity,
+          level: this.level + 1,
         }),
         // SE
         new QuadtreeStrategy({
@@ -81,6 +86,7 @@ export class QuadtreeStrategy<T = any> extends AbstractIndexingStrategy {
             subregion.height
           ),
           capacity: this.capacity,
+          level: this.level + 1,
         })
       )
     }
