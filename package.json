@@ -88,8 +88,8 @@
     ]
   },
   "devDependencies": {
-    "@commitlint/cli": "12.1.4",
-    "@commitlint/config-conventional": "12.1.4",
+    "@commitlint/cli": "19.2.1",
+    "@commitlint/config-conventional": "19.1.0",
     "@types/jest": "26.0.23",
     "@types/node": "14.17.2",
     "colors": "1.4.0",
